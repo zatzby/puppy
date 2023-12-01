@@ -11,3 +11,5 @@ Features:
 Roadmap:
 - print list/save pdf
 - improve design
+- convert script to executable program to run from desktop
+- create custom installer for program
