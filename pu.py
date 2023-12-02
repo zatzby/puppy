@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 import json
+import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-DATA_FILE = 'todo_lists.json'
+DATA_FILE = 'todo_lists.json'  # File for storing list data
 
+# Load lists from JSON file
 def load_lists():
     try:
         with open(DATA_FILE, 'r') as file:
@@ -13,10 +15,12 @@ def load_lists():
     except FileNotFoundError:
         return {}
 
+# Save lists to JSON file
 def save_lists(lists):
     with open(DATA_FILE, 'w') as file:
         json.dump(lists, file)
 
+# Add a new list
 def add_list():
     list_name = simpledialog.askstring("Input", "Enter the new list name:", parent=window)
     if list_name:
@@ -24,10 +28,12 @@ def add_list():
         save_lists(lists)
         update_listbox()
 
+# Add an item to a specific list
 def add_item_to_list(list_name, item):
     lists[list_name].append(item)
     save_lists(lists)
 
+# Delete a selected list
 def delete_list():
     list_name = listbox.get(tk.ACTIVE)
     if list_name and messagebox.askyesno("Confirm", f"Are you sure you want to delete '{list_name}'?"):
@@ -35,17 +41,22 @@ def delete_list():
         save_lists(lists)
         update_listbox()
 
+# Save list as a PDF file
 def save_as_pdf(list_name, items):
     file_path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")])
     if file_path:
         c = canvas.Canvas(file_path, pagesize=letter)
+        c.setFont("Helvetica", 14)
         c.drawCentredString(300, 750, f"Job Name: {list_name}")
+        current_date = datetime.datetime.now().strftime("%m/%d/%y")
+        c.drawString(500, 750, current_date)
         y = 730
         for i, item in enumerate(items, start=1):
             c.drawString(100, y, f"{i}. {item}")
             y -= 20
         c.save()
 
+# Show items of a selected list in a new window
 def show_items(event):
     list_name = listbox.get(listbox.curselection())
     if list_name:
@@ -60,6 +71,7 @@ def show_items(event):
 
         predefined_phrases = ["Phrase 1", "Phrase 2", "Phrase 3", "Phrase 4"]
 
+        # Open window for phrase selection
         def open_phrase_window():
             phrase_window = tk.Toplevel(items_window)
             phrase_window.title("Select a Predefined Phrase")
@@ -69,6 +81,7 @@ def show_items(event):
             for phrase in predefined_phrases:
                 phrase_listbox.insert(tk.END, phrase)
 
+            # Add selected phrase to list
             def add_selected_phrase():
                 selected_phrase = phrase_listbox.get(tk.ACTIVE)
                 if selected_phrase:
@@ -79,6 +92,7 @@ def show_items(event):
             add_phrase_button = tk.Button(phrase_window, text="Add to List", command=add_selected_phrase)
             add_phrase_button.pack()
 
+        # Buttons for item management
         btn_frame = tk.Frame(items_window)
         btn_frame.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -100,6 +114,7 @@ def show_items(event):
         move_down_button = tk.Button(btn_frame, text="Move Down", command=lambda: move_item_down())
         move_down_button.pack()
 
+        # Functions for managing items in a list
         def add_item():
             item = simpledialog.askstring("Input", f"Enter a new item for list '{list_name}':", parent=items_window)
             if item:
@@ -134,25 +149,30 @@ def show_items(event):
             for item in lists[list_name]:
                 items_listbox.insert(tk.END, item)
 
+# Update the main listbox with list names
 def update_listbox():
     listbox.delete(0, tk.END)
     for name in lists:
         listbox.insert(tk.END, name)
 
+# Main application window setup
 window = tk.Tk()
 window.title("To-Do List Application")
 window.geometry("400x400")
 
+# Main list display
 listbox = tk.Listbox(window)
 listbox.pack()
 listbox.bind('<Double-Button-1>', show_items)
 
+# Buttons for adding and deleting lists
 add_list_button = tk.Button(window, text="Add New List", command=add_list)
 add_list_button.pack()
 
 delete_list_button = tk.Button(window, text="Delete List", command=delete_list)
 delete_list_button.pack()
 
+# Load lists from file and display
 lists = load_lists()
 update_listbox()
 

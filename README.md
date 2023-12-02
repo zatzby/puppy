@@ -7,11 +7,11 @@ Features:
 - create lists
 - add items to, and delete items from lists
 - reorder list items
+- save list as pdf
 - saved in local json file
 
 Roadmap:
 
-- print list/save pdf
 - improve design
 - convert script to executable program to run from desktop
 - create custom installer for program
