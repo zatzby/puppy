@@ -48,7 +48,7 @@ def save_as_pdf(list_name, items):
     if file_path:
         c = canvas.Canvas(file_path, pagesize=letter)
         c.setFont("Helvetica", 14)
-        c.drawCentredString(300, 750, f"Job Name: {list_name}")
+        c.drawCentredString(300, 750, f"Job: {list_name}")
         current_date = datetime.datetime.now().strftime("%m/%d/%y")
         c.drawString(500, 750, current_date)
         y = 730
@@ -60,13 +60,16 @@ def save_as_pdf(list_name, items):
 # Function to show items of a selected list in a new window
 def show_items_for_list(list_name):
     items_window = tk.Toplevel(window)
-    items_window.title(f"Items in {list_name}")
+    items_window.title(f"{list_name}")
 
     items_listbox = tk.Listbox(items_window)
     items_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     for item in lists.get(list_name, []):
         items_listbox.insert(tk.END, item)
+
+    # Binding the 'd' key to the delete_item function, add more key bindings ASAP
+    items_window.bind('<d>', lambda event: delete_item(items_listbox))
 
     # Predefined phrases for quick addition
     predefined_phrases = ["Phrase 1", "Phrase 2", "Phrase 3", "Phrase 4"]
@@ -99,7 +102,7 @@ def show_items_for_list(list_name):
     add_item_button = tk.Button(btn_frame, text="Add Item", command=lambda: add_item(list_name, items_listbox))
     add_item_button.pack()
 
-    delete_item_button = tk.Button(btn_frame, text="Delete Item", command=lambda: delete_item(items_listbox))
+    delete_item_button = tk.Button(btn_frame, text="Delete Item", underline=0, command=lambda: delete_item(items_listbox))
     delete_item_button.pack()
 
     move_up_button = tk.Button(btn_frame, text="Move Up", command=lambda: move_item_up(items_listbox))
@@ -164,11 +167,14 @@ window = tk.Tk()
 window.title("To-Do List Application")
 window.geometry("400x400")
 
+# Binding the 'N' key to the add_list function in the main window, add more bindings ASAP
+window.bind('<n>', lambda event: add_list())
+
 listbox = tk.Listbox(window)
 listbox.pack()
 listbox.bind('<Double-Button-1>', show_items)
 
-add_list_button = tk.Button(window, text="Add New List", command=add_list)
+add_list_button = tk.Button(window, text="Add New List", underline=4, command=add_list)
 add_list_button.pack()
 
 delete_list_button = tk.Button(window, text="Delete List", command=delete_list)
