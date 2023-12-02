@@ -1,4 +1,4 @@
-# simplepickuplist
+<img src="puppy_logo.png" alt="Puppy Logo - a silhouette of a puppy" width="240" height="240"/>
 
 A simple python app with no flair, only function.
 
@@ -16,4 +16,4 @@ Roadmap:
 - convert script to executable program to run from desktop
 - create custom installer for program
 
-![Puppy Logo - a silhouette of a puppy](puppy_logo.png)
+
