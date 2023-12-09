@@ -42,6 +42,17 @@ def delete_list():
         save_lists(lists)
         update_listbox()
 
+# Function to edit a selected list
+def edit_item(list_name, items_listbox, items_window):
+    selected_index = items_listbox.curselection()
+    if selected_index:
+        current_item = lists[list_name][selected_index[0]]
+        new_item = simpledialog.askstring("Edit Item", f"Edit the item '{current_item}':", initialvalue=current_item, parent=items_window)
+        if new_item:
+            lists[list_name][selected_index[0]] = new_item
+            save_lists(lists)
+            update_items_listbox(items_listbox)
+
 # Function to save a list as a PDF file
 def save_as_pdf(list_name, items):
     file_path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")])
@@ -67,7 +78,7 @@ def show_items_for_list(list_name):
 
     for item in lists.get(list_name, []):
         items_listbox.insert(tk.END, item)
-
+    
     # Binding the 'd' key to the delete_item function, add more key bindings ASAP
     items_window.bind('<d>', lambda event: delete_item(items_listbox))
 
@@ -110,6 +121,9 @@ def show_items_for_list(list_name):
 
     move_down_button = tk.Button(btn_frame, text="Move Down", command=lambda: move_item_down(items_listbox))
     move_down_button.pack()
+
+    edit_item_button = tk.Button(btn_frame, text="Edit Item", command=lambda: edit_item(list_name, items_listbox, items_window))
+    edit_item_button.pack()
 
     save_pdf_button = tk.Button(btn_frame, text="Save as PDF", command=lambda: save_as_pdf(list_name, lists[list_name]))
     save_pdf_button.pack()
@@ -169,6 +183,7 @@ window.geometry("400x400")
 
 # Binding the 'N' key to the add_list function in the main window, add more bindings ASAP
 window.bind('<n>', lambda event: add_list())
+window.bind('<d>', lambda event: delete_list())
 
 listbox = tk.Listbox(window)
 listbox.pack()
@@ -177,7 +192,7 @@ listbox.bind('<Double-Button-1>', show_items)
 add_list_button = tk.Button(window, text="Add New List", underline=4, command=add_list)
 add_list_button.pack()
 
-delete_list_button = tk.Button(window, text="Delete List", command=delete_list)
+delete_list_button = tk.Button(window, text="Delete List", underline=0, command=delete_list)
 delete_list_button.pack()
 
 lists = load_lists()
