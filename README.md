@@ -12,8 +12,8 @@ Features:
 
 Roadmap:
 
-- improve design
-- convert script to executable program to run from desktop
-- create custom installer for program
-
+- [ ] improve design
+- [ ] add subitems within lists
+- [x] convert script to executable with dependencies bundled
+- [ ] create custom installer for program
 
