@@ -62,10 +62,10 @@ def save_as_pdf(list_name, items):
         c.drawCentredString(300, 750, f"Job: {list_name}")
         current_date = datetime.datetime.now().strftime("%m/%d/%y")
         c.drawString(500, 750, current_date)
-        y = 730
+        y = 700
         for i, item in enumerate(items, start=1):
-            c.drawString(72, y, f"{i}. {item}")
-            y -= 28
+            c.drawString(72, y, f"{item}")
+            y -= 50
         c.save()
 
 # Function to show items of a selected list in a new window

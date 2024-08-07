@@ -1,0 +1,1 @@
+([('pup', '/Users/zach/Documents/GitHub/puppy/dist/pup', 'EXECUTABLE')],)
