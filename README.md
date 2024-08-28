@@ -8,7 +8,7 @@ Being that they are PU lists and this is a PY script, the name Puppy seemed natu
 
 Features:
 
-- create lists
+- create and edit lists
 - add items to, and delete items from lists
 - reorder list items
 - save list as pdf
