@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from PIL import Image, ImageTk
 
-DATA_FILE = 'todo_lists.json'  
+DATA_FILE = 'puppy_lists.json'  
 
 def load_lists():
     try:
@@ -57,7 +57,7 @@ def save_as_pdf(list_name, items):
     if file_path:
         c = canvas.Canvas(file_path, pagesize=letter)
         c.setFont("Helvetica", 14)
-        c.drawCentredString(300, 750, f"Job: {list_name}")
+        c.drawCentredString(300, 750, f"Pickup at {list_name}")
         current_date = datetime.datetime.now().strftime("%m/%d/%y")
         c.drawString(500, 750, current_date)
         y = 700
@@ -82,33 +82,38 @@ def show_items_for_list(list_name):
     items_window.bind('<w>', lambda event: move_item_up(list_name, items_listbox))
     items_window.bind('<s>', lambda event: move_item_down(list_name, items_listbox))
     items_window.bind('<e>', lambda event: edit_item(list_name, items_listbox, items_window))
+    items_window.bind('<o>', lambda event: open_common_items_window())
+    items_window.bind('<p>', lambda event: save_as_pdf(list_name, lists[list_name]))
 
-    predefined_phrases = ["Phrase 1", "Phrase 2", "Phrase 3", "Phrase 4"]
+    predefined_common_items = ["Common item 1", "Common item 2", "Common item 3", "Common item 4"]
 
-    def open_phrase_window():
-        phrase_window = tk.Toplevel(items_window)
-        phrase_window.geometry("500x500")
-        phrase_window.title("Select a Predefined Phrase")
-        phrase_listbox = tk.Listbox(phrase_window)
-        phrase_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    def open_common_items_window():
+        common_items_window = tk.Toplevel(items_window)
+        common_items_window.geometry("500x500")
+        common_items_window.title("Select an item to add to list")
+        common_items_listbox = tk.Listbox(common_items_window)
+        common_items_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        for phrase in predefined_phrases:
-            phrase_listbox.insert(tk.END, phrase)
+        for common_item in predefined_common_items:
+            common_items_listbox.insert(tk.END, common_item)
 
-        def add_selected_phrase():
-            selected_phrase = phrase_listbox.get(tk.ACTIVE)
-            if selected_phrase:
-                add_item_to_list(list_name, selected_phrase)
+        def add_selected_common_item():
+            common_item = common_items_listbox.get(tk.ACTIVE)
+            if common_item:
+                add_item_to_list(list_name, common_item)
                 update_items_listbox(items_listbox, list_name)
-                phrase_window.destroy()
+                common_items_window.destroy()
 
-        add_phrase_button = tk.Button(phrase_window, text="Add to List", command=add_selected_phrase)
-        add_phrase_button.pack()
+        add_common_item_button = tk.Button(common_items_window, text="Add to List", command=add_selected_common_item)
+        add_common_item_button.pack()
+
+        common_items_window.focus_set()
+        common_items_listbox.focus_set()
 
     btn_frame = tk.Frame(items_window)
     btn_frame.pack(side=tk.RIGHT, fill=tk.Y)
 
-    add_item_button = tk.Button(btn_frame, text="Add Item", command=lambda: add_item(list_name, items_listbox))
+    add_item_button = tk.Button(btn_frame, text="Add Item", underline=0, command=lambda: add_item(list_name, items_listbox))
     add_item_button.pack()
 
     delete_item_button = tk.Button(btn_frame, text="Delete Item", underline=0, command=lambda: delete_item(list_name, items_listbox))
@@ -120,14 +125,17 @@ def show_items_for_list(list_name):
     move_down_button = tk.Button(btn_frame, text="Move Down", command=lambda: move_item_down(list_name, items_listbox))
     move_down_button.pack()
 
-    edit_item_button = tk.Button(btn_frame, text="Edit Item", command=lambda: edit_item(list_name, items_listbox, items_window))
+    edit_item_button = tk.Button(btn_frame, text="Edit Item", underline=0, command=lambda: edit_item(list_name, items_listbox, items_window))
     edit_item_button.pack()
 
-    select_phrase_button = tk.Button(btn_frame, text="Select Phrase", command=open_phrase_window)
-    select_phrase_button.pack()
+    select_common_item_button = tk.Button(btn_frame, text="Select Item", command=open_common_items_window)
+    select_common_item_button.pack()
 
-    save_pdf_button = tk.Button(btn_frame, text="Save as PDF", command=lambda: save_as_pdf(list_name, lists[list_name]))
+    save_pdf_button = tk.Button(btn_frame, text="Save as PDF", underline=8, command=lambda: save_as_pdf(list_name, lists[list_name]))
     save_pdf_button.pack()
+
+    items_window.focus_set()
+    items_listbox.focus_set()
 
 def add_item(list_name, items_listbox):
     item = simpledialog.askstring("Input", f"Enter a new item for list '{list_name}':", parent=items_listbox.master)
@@ -196,27 +204,25 @@ def update_listbox():
         listbox.insert(tk.END, name)
 
 window = tk.Tk()
-window.title("To-Do List Application")
+window.title("Puppy List Maker")
 window.geometry("600x600")
 
 window.bind('<a>', lambda event: add_list())
 window.bind('<d>', lambda event: delete_list())
 
-original_image = Image.open("/Users/zach/Documents/GitHub/tkinter/puppy_logo.png")
-resized_image = original_image.resize((100, 100), Image.Resampling.LANCZOS)
+#change path when switching OS
+original_image = Image.open("puppy_logo.png")
+resized_image = original_image.resize((150, 150), Image.Resampling.LANCZOS)
 image = ImageTk.PhotoImage(resized_image)
 
 image_label = tk.Label(window, image=image)
-image_label.pack(side=tk.TOP, anchor=tk.NW, padx=20, pady=10)
-
-label = tk.Label(window, text="Make awesome pickup lists.")
-label.pack(side=tk.TOP, anchor=tk.NE, padx=20, pady=10)
+image_label.pack(side=tk.TOP, anchor=tk.N)
 
 listbox = tk.Listbox(window)
 listbox.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 listbox.bind('<Double-Button-1>', lambda event: show_items(event, listbox.get(listbox.curselection())))
 
-add_list_button = tk.Button(window, text="Add New List", underline=4, command=add_list)
+add_list_button = tk.Button(window, text="Add New List", underline=0, command=add_list)
 add_list_button.pack()
 
 delete_list_button = tk.Button(window, text="Delete List", underline=0, command=delete_list)
