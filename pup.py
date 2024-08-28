@@ -128,7 +128,7 @@ def show_items_for_list(list_name):
     edit_item_button = tk.Button(btn_frame, text="Edit Item", underline=0, command=lambda: edit_item(list_name, items_listbox, items_window))
     edit_item_button.pack()
 
-    select_common_item_button = tk.Button(btn_frame, text="Select Item", underline=0, command=open_common_items_window)
+    select_common_item_button = tk.Button(btn_frame, text="Select Item", command=open_common_items_window)
     select_common_item_button.pack()
 
     save_pdf_button = tk.Button(btn_frame, text="Save as PDF", underline=8, command=lambda: save_as_pdf(list_name, lists[list_name]))
